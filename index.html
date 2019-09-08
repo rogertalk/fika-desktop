@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Fika</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font: inherit;
+      font-size: 100%;
+    }
+
+    #root {
+      /* Account for 10px vertical arrow and 3px border */
+      height: calc(100vh - 10px - 3px * 2);
+      width: calc(100vw - 3px * 2);
+    }
+
+    ol, ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+        "Fira Sans", "Droid Sans", "Helvetica Neue",
+        sans-serif;
+      font-size: 16px;
+      height: 100vh;
+      line-height: 1;
+      margin: 0;
+      overflow: hidden;
+      padding-top: 10px;
+      width: 100vw;
+    }
+
+    body > .arrow {
+      background: #fff;
+      position: relative;
+    }
+
+    body > .arrow:after {
+      bottom: 100%;
+      border: solid transparent;
+      border-color: rgba(255, 255, 255, 0);
+      border-bottom-color: #fff;
+      border-width: 10px;
+      content: " ";
+      height: 0;
+      left: 50%;
+      margin-left: -10px;
+      pointer-events: none;
+      position: absolute;
+      width: 0;
+    }
+
+    body > .frame {
+      background: #fff;
+      border-radius: 5px;
+      padding: 3px;
+    }
+
+    button {
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 9px 12px;
+      width: 300px;
+    }
+
+    button:active {
+      transform: scale(.9);
+    }
+
+    button:hover {
+      background: #000;
+      color: #fff;
+    }
+
+    button:disabled {
+      background: #fff;
+      border-color: #ccc;
+      color: #ccc;
+    }
+
+    h1, h2, h3, h4, h5, h6, p {
+      margin: 0 0 .5em;
+    }
+
+    header {
+      cursor: default;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      -webkit-user-select: none;
+      width: 100%;
+    }
+
+    input {
+      background: #fff;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      padding: 8px 12px;
+      width: 300px;
+    }
+
+    video {
+      background-position: 50% 50%;
+      background-size: cover;
+      border-radius: 3px;
+      height: 100%;
+      left: 0;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+
+    .camera, .player {
+      background: #000;
+      border-radius: 3px;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+    }
+
+    .camera {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .camera header {
+      margin: 10px;
+      position: relative;
+    }
+
+    .camera header .hovermenu {
+      width: 200px;
+    }
+
+    .camera header .title {
+      color: #fff;
+      display: inline-block;
+      padding: 5px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, .5);
+    }
+
+    .camera video {
+      transform: scaleX(-1);
+    }
+
+    .camera .record {
+      background: transparent;
+      border: 4px solid #fff;
+      border-radius: 9999px;
+      cursor: pointer;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .5));
+      height: 60px;
+      margin: 10px;
+      outline: none;
+      padding: 0;
+      transition: transform 100ms ease-out;
+      width: 60px;
+    }
+
+    .camera .record:hover {
+      transform: scale(1.1);
+    }
+
+    .camera .record:active {
+      transform: scale(0.8);
+    }
+
+    .camera.recording .record {
+      background: #fff;
+    }
+
+    .closed {
+      background: #000;
+      height: 100%;
+      width: 100%;
+    }
+
+    .hovermenu {
+      position: relative;
+      text-align: center;
+    }
+
+    .hovermenu ul {
+      backdrop-filter: blur(5px);
+      border-radius: 5px;
+      display: none;
+      flex-direction: column;
+      left: 0;
+      overflow: hidden;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+
+    .hovermenu:hover ul {
+      display: flex;
+    }
+
+    .hovermenu ul li {
+      background: rgba(0, 0, 0, .2);
+      color: #fff;
+      cursor: pointer;
+      overflow: hidden;
+      padding: 5px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .hovermenu ul li:hover {
+      background: rgba(0, 0, 0, .4);
+    }
+
+    .hovermenu ul li.active {
+      text-decoration: underline;
+    }
+
+    .hovermenu ul li.new {
+      font-weight: bold;
+    }
+
+    .hovermenu ul li + li {
+      margin-top: 1px;
+      display: block;
+    }
+
+    .player .play-icon {
+      color: #fff;
+      display: block;
+      font-size: 80px;
+      height: 80px;
+      left: 50%;
+      line-height: 80px;
+      margin: -40px 0 0 -40px;
+      pointer-events: none;
+      position: absolute;
+      text-align: center;
+      text-shadow: rgba(0, 0, 0, .5) 0 0 30px;
+      top: 50%;
+      width: 80px;
+    }
+
+    .log-in {
+      align-items: center;
+      background: #fff;
+      background-image: url(logo.png);
+      background-position: 7px calc(100% - 7px);
+      background-repeat: no-repeat;
+      background-size: 94px 37px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+      position: relative;
+      width: 100%;
+    }
+
+    .log-in .back {
+      cursor: pointer;
+      display: flex;
+      flex-direction: row;
+      left: 3px;
+      position: absolute;
+      top: 7px;
+    }
+
+    .log-in .back span {
+      line-height: 22px;
+    }
+
+    .log-in .back:hover span {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="arrow"></div>
+  <div class="frame">
+    <div id="root"></div>
+  </div>
+  <script>require('./index.js');</script>
+</body>
+</html>

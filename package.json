@@ -1,0 +1,23 @@
+{
+  "name": "fika-desktop",
+  "version": "0.1.6",
+  "productName": "Fika",
+  "homepage": "https://fika.io/",
+  "license": "UNLICENSED",
+  "main": "main.js",
+  "repository": "https://github.com/fika-io/fika-desktop.git",
+  "devDependencies": {
+    "electron": "^1.4.13",
+    "electron-packager": "^8.4.0"
+  },
+  "dependencies": {
+    "menubar": "^5.2.0",
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1"
+  },
+  "scripts": {
+    "build:darwin": "electron-packager . Fika --overwrite --platform=darwin --arch=x64 --icon=fika.icns --app-bundle-id=io.fika.FikaMac --osx-sign.identity=\"3rd Party Mac Developer Application: 47 Center, Inc. (UU4RUSVR26)\"",
+    "build:win32": "electron-packager . Fika --overwrite --platform=win32 --arch=x64 --icon=fika.ico",
+    "start": "electron ."
+  }
+}
